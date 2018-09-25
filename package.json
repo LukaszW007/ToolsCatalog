@@ -1,0 +1,10 @@
+{
+  "name": "ToolsCatalog",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "webpack ./app.js app.bundle.js"
+  },
+  "dependencies": {
+    
+  }
+}
