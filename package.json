@@ -1,5 +1,5 @@
 {
-  "name": "NAME OF THE PROJECT-REPO",
+  "name": "ToolsCatalog",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LukaszW007/NAME OF REPO"
+    "url": "git+https://github.com/LukaszW007/ToolsCatalog"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LukaszW007/NAME OF REPO"
+    "url": "https://github.com/LukaszW007/ToolsCatalog"
   },
-  "homepage": "https://github.com/LukaszW007/NAME OF REPO",
+  "homepage": "https://github.com/LukaszW007/ToolsCatalog",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.3",
