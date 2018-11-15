@@ -11,16 +11,29 @@ const app = express();
 
 // app.use(express.static(__dirname + '/public'));
 
-app.get('/', function (req, res) {
+function dbConnection(SQLquery, result) {
     connection.connect();
-
-    connection.query('SELECT * FROM tools', (error, results, fields) => {
+    connection.query(SQLquery, (error, results, fields) => {
         if (error) throw error;
-        res.send(results);
+        result.send(results);
         console.log(results);
     });
     connection.end();
+}
 
+app.route('/tools')
+    .get((req, res) => {
+        dbConnection('SELECT * FROM tools', res)
+    })
+    .post((req, res) => {
+        //req.body
+        dbConnection('INSERT INTO `tools`(`id`, `set_name`, `description`) VALUES ([value-1],[value-2],[value-3])',res);
+    });
+app.get('/users', (req, res) => {
+    dbConnection('SELECT * FROM users', res)
+});
+app.get('/borrow', (req, res) => {
+    dbConnection('SELECT * FROM borrow', res)
 });
 
 app.listen(3000, function () {
