@@ -5,7 +5,28 @@
         <title>TEST</title>
     </head>
     <body>
-        <div id="app"></div>
-        <script src="build/app.bundle.js"></script>
+        <!--<div id="app"></div>-->
+        <!--<script src="build/app.bundle.js"></script>-->
+        <form action="http://localhost:3000/tools/add" method="POST">
+            <p>
+                Set name: <input type="text" name="set_name">
+            </p>
+            <p>
+                Description: <input type="text" name="description">
+            </p>
+            <input type="submit" value="Submit">
+        </form>
+        <div style="color: red">BORROW</div>
+        <form action="http://localhost:3000/borrow/check" method="POST">
+            <p>
+                Set name: <input type="text" name="set_name">
+            </p>
+            <p>
+                Description: <input type="text" name="description">
+            </p>
+            <input type="submit" value="Submit">
+        </form>
+
+
     </body>
 </html>
