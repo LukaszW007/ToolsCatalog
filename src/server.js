@@ -37,6 +37,10 @@ app.post('/tools/add', (req, res) => {//TODO
     dbConnection(`INSERT INTO tools(set_name,description) VALUES ("${set_name}", "${description}");`, res);
 });
 
+app.delete('/tools/delete',(req,res)=>{
+
+});
+
 /*
 * User endpoints
 */
@@ -58,27 +62,21 @@ app.post('/users/add', (req, res) => {
 app.get('/borrow', (req, res) => {
     dbConnection('SELECT * FROM borrow', res)
 });
-//zrobic update rekordu a jesli wyrzuci blad ze nie ma rekordu to stworzyc nowy
+
 app.get('/borrow/check/:name', (req, res) => {
-    const usersSetName = req.params.name;
-    connection.query(`SELECT return_time FROM borrow WHERE set_name = '${usersSetName}' AND return_time IS NULL;`, (error, results) => {
+    const usersSetParamName = req.params.name;
+    const usersSetName = usersSetParamName.substr(1);
+    console.log(usersSetName);
+    connection.query(`UPDATE borrow SET return_time="${current_time}" WHERE set_name="${usersSetName}" AND return_time IS null or return_time="";`, (error, results) => {//TODO PUT needed?
         if (error) throw error;
-        const resultsReturn = JSON.stringify(results);
-        console.log(resultsReturn);
-        if (resultsReturn.length === 0) {
-            const set_name = req.body.set_name;
+        console.log('to jest rezultat '+results.affectedRows);
+        if (results.affectedRows===0){
+            const set_name = req.body.set_name; //TODO can be here also req.params.set_name, depends on passing information. By address :set_name should be used req.params.set_name. Maybe has to be POST here
             const user_id = req.body.user_id;
-            const borrow_time = current_time;//2016-04-10 23:50:40
+            const borrow_time = current_time;
             const position = req.body.position;
             const info = req.body.info;
             dbConnection(`INSERT INTO borrow (set_name,user_id,borrow_time,position) VALUES ("${set_name}","${user_id}","${borrow_time}","${position}");`, res);
-
-        } else {
-            app.put('/borrow/return', (req, res) => {
-                const return_time = current_time;
-                dbConnection()
-
-            });
         }
     });
     console.log('to jest GET')
