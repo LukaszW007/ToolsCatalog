@@ -1,16 +1,18 @@
-const express = require('express');
-const connection = require('./db');
+/* to run server go to src catalog and run 'nodemon sever.js'*/
+
+const express = require('express'); //import express from 'express'
+const connection = require('./db'); //todo change login info to DB
 const bodyParser = require('body-parser');
 const current_time = (function () {
     const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getUTCDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getUTCDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`; // todo can be used moment.js
 })();
 console.log(current_time);
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 
-function dbConnection(SQLquery, result) {
+function dbConnection(SQLquery,params, result) {//TODO
     connection.query(SQLquery, (error, results) => {
         if (error) throw error;
         result.send(results);
@@ -18,7 +20,6 @@ function dbConnection(SQLquery, result) {
         console.log(' connection is end in connection.query');
     });
     console.log('connection is end ');
-
 }
 
 /*
@@ -27,14 +28,21 @@ function dbConnection(SQLquery, result) {
 
 app.get('/tools', (req, res) => {
     dbConnection('SELECT * FROM tools', res);
-    // res.send('TOOLS');
+    console.log('all tools: ', res)
+    //res.send('TOOLS');
 });
 
 app.post('/tools/add', (req, res) => {//TODO
-    const set_name = req.body.set_name;
+    const setName = req.body.set_name;
     const description = req.body.description;
-    console.log(set_name, description);
-    dbConnection(`INSERT INTO tools(set_name,description) VALUES ("${set_name}", "${description}");`, res);
+    console.log('SET_NAME::', setName, 'DESCRIPtion', description);
+    dbConnection(`INSERT INTO tools(set_name,description) VALUES ("${setName}", "${description}");`, res);
+});
+
+app.delete('/tools/delete/:id', (req, res) => {
+    console.log('request: ', typeof req.params.id);
+    const deleteTooolID = parseInt(req.params.id );
+    dbConnection('DELETE FROM tools WHERE id=;', res)
 });
 
 /*
@@ -46,9 +54,9 @@ app.route('/users')
         dbConnection('SELECT * FROM users', res)
     });
 app.post('/users/add', (req, res) => {
-    const user_id = req.body.user_id;
-    const user_name = req.body.user_name;
-    dbConnection(`INSERT INTO users(user_id, user_name) VALUES ("${user_id}","${user_name}");`, res)
+    const userId = req.body.user_id;
+    const userName = req.body.user_name;
+    dbConnection(`INSERT INTO users(user_id, user_name) VALUES ("${userId}","${userName}");`, res)
 });
 
 /*
@@ -58,10 +66,11 @@ app.post('/users/add', (req, res) => {
 app.get('/borrow', (req, res) => {
     dbConnection('SELECT * FROM borrow', res)
 });
-//zrobic update rekordu a jesli wyrzuci blad ze nie ma rekordu to stworzyc nowy
+//zrobic update rekordu a jesli wyrzuci blad ze nie ma rekordu to stworzyc nowy rekord
 app.get('/borrow/check/:name', (req, res) => {
     const usersSetName = req.params.name;
-    connection.query(`SELECT return_time FROM borrow WHERE set_name = '${usersSetName}' AND return_time IS NULL;`, (error, results) => {
+    const querySelect = `SELECT return_time FROM borrow WHERE set_name = '${usersSetName}' AND return_time IS NULL;`;
+    connection.query(querySelect, (error, results) => {
         if (error) throw error;
         const resultsReturn = JSON.stringify(results);
         console.log(resultsReturn);

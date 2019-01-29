@@ -1,13 +1,14 @@
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-    host: 'sql7.freemysqlhosting.net',
-    user: 'sql7266046',
-    password: 'PXdpnYC2rp',
-    database: 'sql7266046'
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'cowi_tools'
 });
 
 connection.connect(function(err) {
     if (err) throw err;
+    console.log("connected");
 });
 
 module.exports = connection;
