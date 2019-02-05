@@ -16,7 +16,7 @@ function dbConnection(SQLquery, params, result) {//TODO params as optional
     connection.query(SQLquery, params, (error, results) => {
         if (error) throw error;
         result.send(results);
-        //console.log(results);
+        console.log(results);
         console.log(' connection is end in connection.query');
     });
     console.log('connection is end ');
@@ -27,22 +27,25 @@ function dbConnection(SQLquery, params, result) {//TODO params as optional
 */
 
 app.get('/tools', (req, res) => {
-    dbConnection('SELECT * FROM tools', res);
+    const params = null;
+    dbConnection('SELECT * FROM tools', params, res);
     //console.log('all tools: ', res)
 });
 
 app.post('/tools/add', (req, res) => {//TODO
     const setName = req.body.set_name;
     const description = req.body.description;
-    console.log('SET_NAME::', setName, 'DESCRIPtion', description);
-    dbConnection(`INSERT INTO tools(set_name,description) VALUES ("${setName}", "${description}");`, res);
+    const sql = `INSERT INTO tools(set_name,description) VALUES (?,?);`;
+    dbConnection(sql, [setName, description], res);
+    console.log(`Added new tool `,setName);
 });
 
 app.delete('/tools/delete/:id', (req, res) => {
     console.log('request: ', typeof req.params.id);
     const deleteTooolID = parseInt(req.params.id);
-    const sql = 'DELETE FROM tools WHERE id=?;'
-    dbConnection(sql,deleteTooolID, res);
+    const sql = 'DELETE FROM tools WHERE id=?;';
+    dbConnection(sql, deleteTooolID, res);
+    console.log(`Deleted tool with ID `,deleteTooolID);
 });
 
 /*
@@ -56,7 +59,16 @@ app.route('/users')
 app.post('/users/add', (req, res) => {
     const userId = req.body.user_id;
     const userName = req.body.user_name;
-    dbConnection(`INSERT INTO users(user_id, user_name) VALUES ("${userId}","${userName}");`, res)
+    const sql = `INSERT INTO users(user_id, user_name) VALUES (?,?);`;
+    dbConnection(sql, [userId, userName], res);
+    console.log(`Added new user `,userName);
+});
+
+app.delete('/users/delete/:id', (req, res) => {
+    const userId = req.body.user_id;
+    const sql = `DELETE FROM users WHERE id=?;`;
+    dbConnection(sql, userId, res);
+    console.log(`Deleted user with ID `,userId);
 });
 
 /*
@@ -67,8 +79,8 @@ app.get('/borrow', (req, res) => {
     dbConnection('SELECT * FROM borrow', res)
 });
 //zrobic update rekordu a jesli wyrzuci blad ze nie ma rekordu to stworzyc nowy rekord
-app.get('/borrow/check/:name', (req, res) => {
-    const usersSetName = req.params.name;
+app.get('/borrow/check', (req, res) => {
+    const usersSetName = req.params.name; //TODO change from SELECT to UPDATE
     const querySelect = `SELECT return_time FROM borrow WHERE set_name = '${usersSetName}' AND return_time IS NULL;`;
     connection.query(querySelect, (error, results) => {
         if (error) throw error;
